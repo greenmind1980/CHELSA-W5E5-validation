@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#SBATCH -A node
+#SBATCH -p bigmem
+#SBATCH --chdir=/home/harichan/
+#SBATCH --qos normal
+#SBATCH --mail-user=chantal.hari@wsl.ch
+#SBATCH --mail-type==SUBMIT,END,FAIL
+#SBATCH -o logs/CHELSA_W5E5%j.out
+#SBATCH -e logs/CHELSA_W5E5%j.err
+#SBATCH --ntasks=1
+#SBATCH --mem=500G
+#SBATCH --cpus-per-task=64
+#SBATCH --time=696:24:15
+#SBATCH --output=/home/harichan/logs/chelsa_w5e5_%A_%a.out
+
+#Specify the starting time
+YEAR=$(date -d "1978-12-31 $SLURM_ARRAY_TASK_ID years" +%Y)
+
+singularity exec -B /storage /home/harichan/singularity/chelsa_V2.1_psql.cont5 R --vanilla -f /home/harichan/scripts/chelsa_w5e5-validation/chelsa_w5e5_validation/functions/list_tasmax.R --args $YEAR 
+

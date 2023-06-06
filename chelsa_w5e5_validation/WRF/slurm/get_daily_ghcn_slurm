@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#SBATCH --job-name=GET_GHCN_TAS_parallel
+#SBATCH -A node
+#SBATCH -p node
+#SBATCH --chdir=/home/harichan/
+#SBATCH --qos normal
+#SBATCH --mail-user=chantal.hari@wsl.ch
+#SBATCH --mail-type==SUBMIT,END,FAIL
+#SBATCH -o logs/GHCN_TAS%j.out
+#SBATCH -e logs/GHCN_TAS%j.err
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=20
+#SBATCH --mem-per-cpu=3G
+#SBATCH --time=696:24:15
+
+STARTDATE=1978-12-31
+YEAR=$(date -d "$STARTDATE $SLURM_ARRAY_TASK_ID days" +%Y)
+MONTH=$(date -d "$STARTDATE $SLURM_ARRAY_TASK_ID days" +%m)
+DAY=$(date -d "$STARTDATE $SLURM_ARRAY_TASK_ID days" +%d)
+
+
+singularity exec -B /storage /storage/karger/singularity/chelsa_V2.1.ismip.cont R --vanilla -f /home/harichan/scripts/chelsa_w5e5-validation/chelsa_w5e5_validation/functions/get_ghcn_daily.R --args  ${DAY} ${MONTH} ${YEAR}
+
+

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#SBATCH --job-name=av_index
+#SBATCH -A node
+#SBATCH --chdir=/home/harichan/
+#SBATCH --qos normal
+#SBATCH --mail-user=chantal.hari@wsl.ch
+#SBATCH --mail-type==SUBMIT,END,FAIL
+#SBATCH -o logs/av_index%j.out
+#SBATCH -e logs/av_index%j.err
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=10
+#SBATCH --mem-per-cpu=3G
+#SBATCH --time=30:00:00
+
+
+singularity exec -B /storage /home/harichan/singularity/harichans.sing R --vanilla -f /home/harichan/scripts/chelsa_w5e5-validation/WRF/functions/added_value --args $SLURM_ARRAY_TASK_ID
+
